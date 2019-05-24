@@ -1,2 +1,6 @@
-a = 01010 and 1111
-b = 00001 or 11100 xor 1010
+print 00000001 and 00000010
+print 00000011 or 00000100 xor 00000101
+a = 00000110
+b = 00000111
+print a and b
+print b xor a

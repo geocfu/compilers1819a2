@@ -1,0 +1,20 @@
+Stmt_list       ->      Stmt Stmt_list | .
+Stmt            ->      id assign Expr | print Expr.
+Expr            ->      Atom Atom_tail.
+Atom_tail       ->      xor Atom Atom_tail | .
+Atom            ->      Term Term_tail.
+Term_tail       ->      or Term Term_tail | .
+Term            ->      Factor Factor_tail.
+Factor_tail     ->      and Factor Factor_tail | .
+Factor          ->      (Expr) | id | binary.
+
+
+Stmt_list       ->      Stmt Stmt_list | ε
+Stmt            ->      id = Expr | print Expr
+Expr            ->      Term Term_tail
+Term_tail       ->      Addop Term Term_tail | ε
+Term            ->      Factor Factor_tail
+Factor_tail     ->      Multop Factor Factor_tail | ε
+Factor          ->      (Expr) | id | number
+Addop           ->      + | -
+Multop          ->      * | /

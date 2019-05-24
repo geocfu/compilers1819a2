@@ -25,130 +25,112 @@ class myParser:
             (symbol_or, 'or'),
             (symbol_and, 'and'),
             (symbol_equals, '='),
-            (binary_number, 'BINARY'),
+            (binary_number, 'binary'),
             (keyword_print, 'print'),
-            (identifier, 'ID'),
+            (identifier, 'id'),
             (space, plex.IGNORE),
         ])
 
-    def createScanner(self, fp):
+    def create_scanner(self, fp):
         self.scanner = plex.Scanner(self.lexicon, fp)
-        self.la, self.text = self.nextToken()
+        self.la, self.text = self.next_token()
     
-    def nextToken(self):
+    def next_token(self):
         return self.scanner.read()
 
     def parse(self, fp):
-        self.createScanner(fp)
+        self.create_scanner(fp)
         self.statement_list()
 
     def match(self, token):
         print(token)
         if self.la == token:
-            self.la, self.text = self.nextToken()
+            self.la, self.text = self.next_token()
         else:
-            raise ParseError("Expected ''")
+            raise ParseError("Expected self.la == token in match()")
 
     def statement_list(self):
-        if self.la == 'ID' or self.la == 'print':
+        if self.la == 'id' or self.la == 'print':
             self.statement()
             self.statement_list()
         elif self.la == None:
             return
         else:
-            raise ParseError('Expected ID or print in statement_list')
+            raise ParseError('Expected id or print in statement_list()')
 
     def statement(self):
-        if self.la == 'ID':
-            self.match('ID')
+        if self.la == 'id':
+            self.match('id')
             self.match('=')
             self.expression()
         elif self.la == 'print':
             self.match('print')
             self.expression()
         else:
-            raise ParseError('Expected ID or print in statement')
+            raise ParseError('Expected id or print in statement()')
 
     def expression(self):
-        if self.la == '(' or self.la == 'ID' or self.la == 'BINARY':
+        if self.la == '(' or self.la == 'id' or self.la == 'binary':
             self.atom()
             self.atom_tail()
         else:
-            raise ParseError('Expected ( or ID or BINARY in expression')
+            raise ParseError('Expected ( or id or binary in expression()')
     
     def atom_tail(self):
         if self.la == 'xor':
-            self.xor_operation()
+            self.match('xor')
             self.atom()
             self.atom_tail()
-        elif self.la == 'ID' or self.la == 'print' or self.la == None or self.la == ')':
+        elif self.la == 'id' or self.la == 'print' or self.la == None or self.la == ')':
             return
         else:
-            raise ParseError('Expected xor in atom_tail')
+            raise ParseError('Expected xor in atom_tail()')
     
     def atom(self):
-        if self.la == '(' or self.la == 'ID' or self.la == 'BINARY':
+        if self.la == '(' or self.la == 'id' or self.la == 'binary':
             self.term()
             self.term_tail()
         else:
-            raise ParseError('Expected ( or ID or NUMBER in termination')
+            raise ParseError('Expected ( or id or binary in term()')
 
     def term_tail(self):
         if self.la == 'or':
-            self.or_operation()
+            self.match('or')
             self.term()
             self.term_tail()
-        elif self.la == 'xor' or self.la == 'ID' or self.la == 'print' or self.la == None or self.la == ')':
+        elif self.la == 'xor' or self.la == 'id' or self.la == 'print' or self.la == None or self.la == ')':
             return
         else:
-            raise ParseError('Expected or in term_tail')
+            raise ParseError('Expected or in term_tail()')
 
     def term(self):
-        if self.la == '(' or self.la == 'ID' or self.la == 'BINARY':
+        if self.la == '(' or self.la == 'id' or self.la == 'binary':
             self.factor()
             self.factor_tail()
         else:
-            raise ParseError('Expected ( or ID or BINARY in termination')
+            raise ParseError('Expected ( or id or binary in term()')
     
     def factor_tail(self):
         if self.la == 'and':
-            self.and_operation()
+            self.match('and')
             self.factor()
             self.factor_tail()
-        elif self.la == 'xor' or self.la == 'or' or self.la == 'ID' or self.la == 'print' or self.la == None or self.la == ')':
+        elif self.la == 'xor' or self.la == 'or' or self.la == 'id' or self.la == 'print' or self.la == None or self.la == ')':
             return
         else:
-            raise ParseError('Expected and factor_tail')
+            raise ParseError('Expected and in factor_tail()')
 
     def factor(self):
         if self.la == '(':
             self.match('(')
             self.expression()
             self.match(')')
-        elif self.la == 'ID':
-            self.match('ID')
-        elif self.la == 'BINARY':
-            self.match('BINARY')
+        elif self.la == 'id':
+            self.match('id')
+        elif self.la == 'binary':
+            self.match('binary')
         else:
-            raise ParseError('Expected ( or ID or BINARY')
-
-    def xor_operation(self):
-        if self.la == 'xor':
-            self.match('xor')
-        else:
-            raise ParseError('Expected ^')
-
-    def or_operation(self):
-        if self.la == 'or':
-            self.match('or')
-        else:
-            raise ParseError('Expected |')
-
-    def and_operation(self):
-        if self.la == 'and':
-            self.match('and')
-        else:
-            raise ParseError('Expected &')
+            raise ParseError('Expected ( or id or binary in factor()')
 
 parser = myParser()
 with open('test.txt', 'r') as fp:
