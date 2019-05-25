@@ -3,4 +3,4 @@ print 00000011 or 00000100 xor 00000101
 a = 00000110
 b = 00000111
 print a and b
-print b xor a
+print (b xor a) and 00000100

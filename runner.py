@@ -71,8 +71,7 @@ class myParser:
             self.st[varname] = e
         elif self.la == 'print':
             self.match('print')
-            e = self.expression()
-            print('{:08b}'.format(e))
+            print('{:08b}'.format(self.expression()))
         else:
             raise ParseError('Expected id or print in statement()')
 
