@@ -2,5 +2,9 @@ print 00000001 and 00000010
 print 00000011 or 00000100 xor 00000101
 a = 00000110
 b = 00000111
+c = 00000100 xor (a or 00000100 and ((b and a) xor b))
 print a and b
-print (b xor a) and 00000100
+print (b xor a)
+print c
+print c xor b and (c or a xor (a and b))
+print 1 or 11
